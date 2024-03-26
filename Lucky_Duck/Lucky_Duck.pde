@@ -28,7 +28,7 @@ class Duck{
   }
   
   void drawDuck() {
-    image(duckImg, duckX * gridSize + gridSize / 2, duckY * gridSize + gridSize / 2, gridSize, gridSize);
+    image(duckImg, duckX * gridSize, duckY * gridSize, gridSize, gridSize);
   }
   
   void moveDuck() {
