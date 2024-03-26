@@ -34,20 +34,21 @@ class Duck{
   void moveDuck() {
     int nextX = duckX;
     int nextY = duckY;
-    if (keyPressed) {
-      if (keyCode == UP) {
-        nextY -= 1;
-        duckDirection = 3;
-      } else if (keyCode == DOWN) {
-        nextY += 1;
-        duckDirection = 1;
-      } else if (keyCode == LEFT) {
-        nextX -= 1;
-        duckDirection = 2;
-      } else if (keyCode == RIGHT) {
-        nextX += 1;
-        duckDirection = 0;
-      }
+    if (keyCode == UP) {
+      nextY -= 1;
+      duckDirection = 3;
+    } 
+    else if (keyCode == DOWN) {
+      nextY += 1;
+      duckDirection = 1;
+    } 
+    else if (keyCode == LEFT) {
+      nextX -= 1;
+      duckDirection = 2;
+    } 
+    else if (keyCode == RIGHT) {
+      nextX += 1;
+      duckDirection = 0;
     }
     if (isValidMove(nextX, nextY)) {
       duckX = nextX;
