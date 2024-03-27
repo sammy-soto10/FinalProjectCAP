@@ -125,13 +125,15 @@ void setup(){
   background(pondImg);
   playerDuck = new Duck();
   boundaries = new ArrayList<Boundary>();
-  boundaries.add(new Boundary(200,200,10,100));
   boundaries.add(new Boundary(0,0,width,gridSize));
   boundaries.add(new Boundary(0,700-35,width,gridSize));
   boundaries.add(new Boundary(0,0,35,height/2-15));
   boundaries.add(new Boundary(0,height/2+50,gridSize,height));
   boundaries.add(new Boundary(width-gridSize,0,gridSize,height/2-15));
   boundaries.add(new Boundary(width-gridSize,height/2+50,gridSize,height));
+  boundaries.add(new Boundary(width/2-gridSize/2,0,gridSize,4*gridSize));
+  boundaries.add(new Boundary(width/2-gridSize/2,height - 4*gridSize,gridSize,height));
+  
 }
 
 void draw(){
