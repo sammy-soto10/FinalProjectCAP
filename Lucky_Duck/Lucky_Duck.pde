@@ -1,13 +1,17 @@
 // Lucky Duck Code
 import java.util.Iterator;
 
-
+PImage menuImg;
 PImage pondImg;
 PImage duckImg;
 PImage coinImg;
 
 int gridSize = 35; // Size of each grid cell
 int cols, rows; // Number of columns and rows in the grid
+
+int MENU_STATE = 0;
+int GAME_STATE = 1;
+int currentState = MENU_STATE;
 
 void drawGrid() {
   stroke(100, 100, 100, 20);
@@ -156,9 +160,11 @@ void setup() {
   size(700, 700);
   cols = width / gridSize;
   rows = height / gridSize;
+  menuImg = loadImage("Menu.png");
   pondImg = loadImage("Pond.png");
   duckImg = loadImage("Duck.png");
   coinImg = loadImage("coin.png");
+ 
   background(pondImg);
   playerDuck = new Duck();
   boundaries = new ArrayList<Boundary>();
@@ -179,6 +185,29 @@ void setup() {
 }
 
 void draw() {
+  if(currentState == MENU_STATE){
+    drawMenu();
+  }else if(currentState == GAME_STATE){
+    drawGame();
+  }
+}
+void drawMenu(){
+  background(menuImg);
+  
+  // Draw the start button
+  rectMode(CENTER);
+  stroke(255);
+  fill(#FFD800);
+  rect(150, 500, 150, 50, 20);
+  
+
+  fill(255);
+  textSize(24);
+  textAlign(CENTER, CENTER);
+  text("START", 150, 500);
+}
+
+void drawGame(){
   background(pondImg);
   drawGrid();
   playerDuck.drawDuck();
@@ -199,5 +228,12 @@ void draw() {
     }
     
     
+  }
+}
+void mousePressed() {
+  // Check if the mouse click is inside the start button
+  if (currentState == MENU_STATE && mouseX > 150 - 150/2 && mouseX < 150 + 150/2 &&
+      mouseY > 500 - 50/2 && mouseY < 500 + 50/2) {
+    currentState = GAME_STATE; // Switch to game state
   }
 }
