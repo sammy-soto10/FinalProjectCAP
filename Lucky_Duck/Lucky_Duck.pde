@@ -235,8 +235,8 @@ void drawGame(){
 }
 void mousePressed() {
   // Check if the mouse click is inside the start button
-  if (currentState == MENU_STATE && mouseX > 75 - 150/2 && mouseX < 75 + 150/2 &&
-      mouseY > 475 - 50/2 && mouseY < 475 + 50/2) {
+  if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
+      mouseY > 475 && mouseY < 475 + 50) {
     currentState = GAME_STATE; // Switch to game state
   }
 }
