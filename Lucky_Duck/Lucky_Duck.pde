@@ -6,6 +6,7 @@ PImage menuImg;
 PImage pondImg;
 PImage duckImg;
 PImage coinImg;
+PImage leprechaunImg;
 
 SoundFile coinSound;
 
@@ -166,6 +167,7 @@ void setup() {
   pondImg = loadImage("Pond.png");
   duckImg = loadImage("Duck.png");
   coinImg = loadImage("coin.png");
+  leprechaunImg = loadImage("leprechaun.png");
   coinSound = new SoundFile(this, "coinCollect.mp3");
 
   background(pondImg);
