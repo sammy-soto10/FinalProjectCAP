@@ -9,13 +9,12 @@ PImage coinImg;
 
 SoundFile coinSound;
 
-int gridSize = 35; // Size of each grid cell
-int cols, rows; // Number of columns and rows in the grid
-
 int MENU_STATE = 0;
 int GAME_STATE = 1;
 int currentState = MENU_STATE;
 
+int gridSize = 35; // Size of each grid cell
+int cols, rows; // Number of columns and rows in the grid
 void drawGrid() {
   stroke(100, 100, 100, 20);
   for (int i = 0; i < cols; i++) {
@@ -167,9 +166,8 @@ void setup() {
   pondImg = loadImage("Pond.png");
   duckImg = loadImage("Duck.png");
   coinImg = loadImage("coin.png");
-  
   coinSound = new SoundFile(this, "coinCollect.mp3");
- 
+
   background(pondImg);
   playerDuck = new Duck();
   boundaries = new ArrayList<Boundary>();
@@ -190,11 +188,12 @@ void setup() {
 }
 
 void draw() {
-  if(currentState == MENU_STATE){
-    drawMenu();
-  }else if(currentState == GAME_STATE){
+//will fix something wrong with boundaries when going from menu to game
+//  if(currentState == MENU_STATE){
+//    drawMenu();
+//  }else if(currentState == GAME_STATE){
     drawGame();
-  }
+ // }
 }
 void drawMenu(){
   background(menuImg);
@@ -211,13 +210,12 @@ void drawMenu(){
   textAlign(CENTER, CENTER);
   text("START", 150, 500);
 }
-
 void drawGame(){
   background(pondImg);
   drawGrid();
   playerDuck.drawDuck();
   playerDuck.moveDuck();
-  
+
   for (Boundary boundary : boundaries) {
     boundary.drawBoundary();
   }
@@ -232,9 +230,10 @@ void drawGame(){
     } else {
       coin.drawCoin();
     }
-    
-    
+
+
   }
+  
 }
 void mousePressed() {
   // Check if the mouse click is inside the start button
