@@ -1,10 +1,13 @@
 // Lucky Duck Code
 import java.util.Iterator;
+import processing.sound.*;
 
 PImage menuImg;
 PImage pondImg;
 PImage duckImg;
 PImage coinImg;
+
+SoundFile coinSound;
 
 int gridSize = 35; // Size of each grid cell
 int cols, rows; // Number of columns and rows in the grid
@@ -164,6 +167,8 @@ void setup() {
   pondImg = loadImage("Pond.png");
   duckImg = loadImage("Duck.png");
   coinImg = loadImage("coin.png");
+  
+  coinSound = new SoundFile(this, "coinCollect.mp3");
  
   background(pondImg);
   playerDuck = new Duck();
@@ -222,6 +227,7 @@ void drawGame(){
     Coin coin = it.next();
     if (dist(playerDuck.getX() * gridSize, playerDuck.getY()* gridSize , coin.getX()  , coin.getY()  ) < gridSize*0.75){
       it.remove();
+      coinSound.play();
       println("Coin collected");
     } else {
       coin.drawCoin();
