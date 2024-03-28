@@ -188,21 +188,19 @@ void setup() {
 }
 
 void draw() {
-//will fix something wrong with boundaries when going from menu to game
-//  if(currentState == MENU_STATE){
-//    drawMenu();
-//  }else if(currentState == GAME_STATE){
+  if(currentState == MENU_STATE){
+    drawMenu();
+  }else if(currentState == GAME_STATE){
     drawGame();
- // }
+  }
 }
 void drawMenu(){
   background(menuImg);
   
   // Draw the start button
-  rectMode(CENTER);
   stroke(255);
   fill(#FFD800);
-  rect(150, 500, 150, 50, 20);
+  rect(75, 475, 150, 50, 20);
   
 
   fill(255);
@@ -237,8 +235,8 @@ void drawGame(){
 }
 void mousePressed() {
   // Check if the mouse click is inside the start button
-  if (currentState == MENU_STATE && mouseX > 150 - 150/2 && mouseX < 150 + 150/2 &&
-      mouseY > 500 - 50/2 && mouseY < 500 + 50/2) {
+  if (currentState == MENU_STATE && mouseX > 75 - 150/2 && mouseX < 75 + 150/2 &&
+      mouseY > 475 - 50/2 && mouseY < 475 + 50/2) {
     currentState = GAME_STATE; // Switch to game state
   }
 }
