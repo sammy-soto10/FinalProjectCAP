@@ -1,3 +1,5 @@
+import processing.sound.*;
+
 // Andrea Contreras, Pablo Moreno, Sam Soto
 
 import java.util.Iterator;
