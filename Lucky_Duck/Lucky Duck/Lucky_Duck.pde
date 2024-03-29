@@ -1,5 +1,3 @@
-import processing.sound.*;
-
 // Andrea Contreras, Pablo Moreno, Sam Soto
 
 import java.util.Iterator;
@@ -16,7 +14,9 @@ SoundFile bg;
 SoundFile coinSound;
 
 int MENU_STATE = 0;
-int GAME_STATE = 1;
+int GAME_STATE_EASY= 1;
+int GAME_STATE_HARD= 2;
+int WIN_STATE = 3;
 int currentState = MENU_STATE;
 
 int gridSize = 35; 
@@ -267,6 +267,8 @@ Coin test;
 ArrayList<Leprechaun> leprechauns;
 Leprechaun testL;
 
+int coinSize;
+
 void setup() {
   size(700, 700);
   
@@ -299,9 +301,9 @@ void setup() {
 
   // Creating new coin objects
   coins = new ArrayList<Coin>();
-  for (int i = 20; i> 0; i--) {
-    coins.add(new Coin(random(1, cols-2) * gridSize, random(1, rows-2) * gridSize));
-  }
+  //for (int i = 0; i<coinSize; i++) {
+  //  coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
+  //}
   
   // Creating new leprechaun objects
   leprechauns = new ArrayList<Leprechaun>();
@@ -314,7 +316,9 @@ void setup() {
 void draw() {
   if(currentState == MENU_STATE){
     drawMenu();
-  }else if(currentState == GAME_STATE){
+  }else if(currentState == GAME_STATE_EASY){
+    drawGame();
+  }else if(currentState == GAME_STATE_HARD){
     drawGame();
   }
 }
@@ -369,6 +373,12 @@ void drawGame(){
     }
   }
   
+  //check if won
+  if(coins.size() == 0){
+    println("Player wins!");
+    currentState = WIN_STATE;
+  }
+  
   // Iterate through leprechauns, draw them, and move them
   for (Leprechaun leprechaun : leprechauns) {
     leprechaun.drawLeprechaun();
@@ -379,6 +389,12 @@ void drawGame(){
       println("Player loses!"); // Print message to console
     }
   }
+  
+  //print coins
+  fill(0);
+  textSize(24);
+  textAlign(CENTER, CENTER);
+  text("Coins Remaining: " + coins.size(), 150, 680);
 }
 
 // Function to handle mouse clicks
@@ -386,11 +402,24 @@ void mousePressed() {
   // Check if the mouse click is inside the start buttons
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 450 && mouseY < 450 + 50) {
-    currentState = GAME_STATE; // Switch to game state (easy mode)
+      currentState = GAME_STATE_EASY; // Switch to game state (easy mode)
+    
+    //make 20 coins
+      coinSize = 20;
+      for (int i = 0; i<coinSize; i++) {
+        coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
+      }
+  
   }
   
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 550 && mouseY < 550 + 50) {
-    currentState = GAME_STATE; // Switch to game state (hard mode)
+      currentState = GAME_STATE_HARD; // Switch to game state (hard mode)
+    
+    //make 30 coins
+      coinSize = 30;
+      for (int i = 0; i<coinSize; i++) {
+        coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
+      }
   }
 }
