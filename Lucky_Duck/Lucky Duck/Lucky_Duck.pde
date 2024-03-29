@@ -190,10 +190,10 @@ class Leprechaun {
   float leprechaunDirection;
 
   // Constructor
-  Leprechaun(float x, float y) {
+  Leprechaun(float x, float y, float speed) {
     leprechaunX = x;
     leprechaunY = y;
-    leprechaunSpeed = 3;
+    leprechaunSpeed = speed;
     leprechaunDirection = random(TWO_PI);
   }
 
@@ -307,18 +307,20 @@ void setup() {
   
   // Creating new leprechaun objects
   leprechauns = new ArrayList<Leprechaun>();
-  for (int i = 0; i < 3; i++) {
-    leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize));
-  }
+  //for (int i = 0; i < 3; i++) {
+  //  leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize));
+  //}
 }
 
 // Main drawing loop
 void draw() {
   if(currentState == MENU_STATE){
     drawMenu();
-  }else if(currentState == GAME_STATE_EASY){
+  }
+  else if(currentState == GAME_STATE_EASY){
     drawGame();
-  }else if(currentState == GAME_STATE_HARD){
+  }
+  else if(currentState == GAME_STATE_HARD){
     drawGame();
   }
 }
@@ -409,6 +411,11 @@ void mousePressed() {
       for (int i = 0; i<coinSize; i++) {
         coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
       }
+      
+      int leprechaunSize = 3;
+      for (int i = 0; i < leprechaunSize; i++) {
+        leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize, 3));
+      }
   
   }
   
@@ -420,6 +427,11 @@ void mousePressed() {
       coinSize = 30;
       for (int i = 0; i<coinSize; i++) {
         coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
+      }
+      
+      int leprechaunSize = 5;
+      for (int i = 0; i < leprechaunSize; i++) {
+        leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize, 4));
       }
   }
 }
