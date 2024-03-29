@@ -1,3 +1,5 @@
+// Andrea Contreras, Pablo Moreno, Sam Soto
+
 import java.util.Iterator;
 import processing.sound.*;
 
@@ -290,13 +292,13 @@ void setup() {
   boundaries.add(new Boundary(0, height/2+50, gridSize, height));
   boundaries.add(new Boundary(width-gridSize, 0, gridSize, height/2-15));
   boundaries.add(new Boundary(width-gridSize, height/2+50, gridSize, height));
-  boundaries.add(new Boundary(width/2-gridSize/2, 0, gridSize, 4*gridSize));
-  boundaries.add(new Boundary(width/2-gridSize/2, height - 4*gridSize, gridSize, height));
+  //boundaries.add(new Boundary(width/2-gridSize/2, 0, gridSize, 4*gridSize));
+  //boundaries.add(new Boundary(width/2-gridSize/2, height - 4*gridSize, gridSize, height));
 
   // Creating new coin objects
   coins = new ArrayList<Coin>();
   for (int i = 20; i> 0; i--) {
-    coins.add(new Coin(random(1, cols-1) * gridSize, random(1, rows-1) * gridSize));
+    coins.add(new Coin(random(1, cols-2) * gridSize, random(1, rows-2) * gridSize));
   }
   
   // Creating new leprechaun objects
