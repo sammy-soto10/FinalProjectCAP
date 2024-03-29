@@ -1,7 +1,7 @@
-// Lucky Duck Code
 import java.util.Iterator;
 import processing.sound.*;
 
+// Global variables
 PImage menuImg;
 PImage pondImg;
 PImage duckImg;
@@ -17,6 +17,8 @@ int currentState = MENU_STATE;
 
 int gridSize = 35; 
 int cols, rows;
+
+// Function to draw grid lines
 void drawGrid() {
   strokeWeight(1);
   stroke(100, 100, 100, 20);
@@ -28,12 +30,14 @@ void drawGrid() {
   }
 }
 
+// Class representing a boundary
 class Boundary {
   int xpos;
   int ypos;
   int w;
   int h;
 
+  // Constructor
   Boundary(int xpos, int ypos, int w, int h) {
     this.xpos = xpos;
     this.ypos = ypos;
@@ -41,6 +45,7 @@ class Boundary {
     this.h = h;
   }
 
+  // Function to draw the boundary
   void drawBoundary() {
     noStroke();
     fill(164, 192, 57);
@@ -48,12 +53,13 @@ class Boundary {
   }
 }
   
-  
+// Class representing the player's duck
 class Duck {
   float duckX, duckY;
   float duckDirection; // Duck's direction (0: right, 1: down, 2: left, 3: up)
   float duckSpeed;
 
+  // Constructor
   Duck() {
     duckX = cols / 2;
     duckY = rows / 2;
@@ -61,14 +67,17 @@ class Duck {
     duckSpeed = 0.05;
   }
 
+  // Function to draw the duck
   void drawDuck() {
     image(duckImg, duckX * gridSize, duckY * gridSize, gridSize, gridSize);
   }
   
+  // Function to check if duck is within the window
   boolean withinWindow(float x, float y) {
     return (x >= 0 && x < cols-1 && y >= 0 && y < rows-1);
   }
   
+  // Function to check if duck collides with any boundary
   boolean collidesWithAnyBoundary(float x, float y) {
     for (Boundary boundary : boundaries) {
       if (collidesWithBoundary(boundary, x, y)) {
@@ -78,8 +87,8 @@ class Duck {
     return false;
   }
   
+  // Function to check if duck collides with a specific boundary
   boolean collidesWithBoundary(Boundary b, float x, float y) {
-    // check for collision with each boundary
     if (x * gridSize + gridSize > b.xpos && x * gridSize < b.xpos + b.w &&
       y * gridSize + gridSize > b.ypos && y * gridSize < b.ypos + b.h) {
       return true;
@@ -87,79 +96,96 @@ class Duck {
     return false;
   }
 
+  // Function to move the duck based on user input
   void moveDuck() {
     float nextX = duckX;
     float nextY = duckY;
     if (keyCode == UP) {
       duckDirection = 3;
-    } else if (keyCode == DOWN) {
+    } 
+    else if (keyCode == DOWN) {
       duckDirection = 1;
-    } else if (keyCode == LEFT) {
+    } 
+    else if (keyCode == LEFT) {
       duckDirection = 2;
-    } else if (keyCode == RIGHT) {
+    } 
+    else if (keyCode == RIGHT) {
       duckDirection = 0;
     }
 
     // Move the duck in the current direction
-    //if (withinWindow(nextX, nextY)) {
     if (duckDirection == 0) {
       nextX += duckSpeed;
-    } else if (duckDirection == 1) {
+    } 
+    else if (duckDirection == 1) {
       nextY += duckSpeed;
-    } else if (duckDirection == 2) {
+    } 
+    else if (duckDirection == 2) {
       nextX -= duckSpeed;
-    } else if (duckDirection == 3) {
+    } 
+    else if (duckDirection == 3) {
       nextY -= duckSpeed;
     }
 
+    // Check for collisions with boundaries before moving
     if (!collidesWithAnyBoundary(nextX, nextY)) {
       duckX = nextX;
       duckY = nextY;
     }
 
-    if (duckX <0) {
-      duckX = cols-1;
-    } else if (duckX > cols-1) {
-      duckX =0;
+    // Wrap around the screen if duck moves beyond boundaries
+    if (duckX < 0) {
+      duckX = cols - 1;
+    } 
+    else if (duckX > cols - 1) {
+      duckX = 0;
     }
-    
   }
 
+  // Function to get duck's X coordinate
   float getX() {
     return duckX;
   }
 
+  // Function to get duck's Y coordinate
   float getY() {
     return duckY;
   }
 }
 
+// Class representing a coin
 class Coin {
   float coinX, coinY;
 
+  // Constructor
   Coin(float x, float y) {
     coinX = x;
     coinY = y;
   }
 
+  // Function to draw the coin
   void drawCoin() {
-    image(coinImg, coinX  + gridSize * 0.12, coinY + gridSize * 0.12, gridSize *.8, gridSize *.8);
+    image(coinImg, coinX + gridSize * 0.12, coinY + gridSize * 0.12, gridSize * 0.8, gridSize * 0.8);
   }
 
+  // Function to get coin's X coordinate
   float getX() {
     return coinX;
   }
 
+  // Function to get coin's Y coordinate
   float getY() {
     return coinY;
   }
 }
 
+// Class representing a leprechaun
 class Leprechaun {
   float leprechaunX, leprechaunY;
   float leprechaunSpeed;
   float leprechaunDirection;
 
+  // Constructor
   Leprechaun(float x, float y) {
     leprechaunX = x;
     leprechaunY = y;
@@ -167,15 +193,18 @@ class Leprechaun {
     leprechaunDirection = random(TWO_PI);
   }
 
+  // Function to draw the leprechaun
   void drawLeprechaun() {
     image(leprechaunImg, leprechaunX + gridSize * 0.12, leprechaunY + gridSize * 0.12, gridSize * 0.8, gridSize * 0.8 * 7/4);
   }
 
+  // Function to move the leprechaun
   void moveLeprechaun() {
-    // move leprechaun in a random direction
+    // Move leprechaun in a random direction
     leprechaunX += cos(leprechaunDirection) * leprechaunSpeed;
     leprechaunY += sin(leprechaunDirection) * leprechaunSpeed;
 
+    // Check for collisions with boundaries and adjust direction if necessary
     if (collidesWithAnyBoundary(leprechaunX, leprechaunY)) {
       for (int i = 0; i < 100; i++) {
         leprechaunDirection = random(TWO_PI);
@@ -185,7 +214,7 @@ class Leprechaun {
       }
     }
    
-    
+    // Check for collisions with edge of window and adjust direction if necessary
     if (leprechaunX < 0 || leprechaunX > width || leprechaunY < 0 || leprechaunY > height) {
       for (int i = 0; i < 100; i++) {
         leprechaunDirection = random(TWO_PI);
@@ -196,6 +225,7 @@ class Leprechaun {
     }
   }
 
+  // Function to check if leprechaun collides with any boundary
   boolean collidesWithAnyBoundary(float x, float y) {
     for (Boundary boundary : boundaries) {
       if (collidesWithBoundary(boundary, x, y)) {
@@ -205,6 +235,7 @@ class Leprechaun {
     return false;
   }
 
+  // Function to check if leprechaun collides with a specific boundary
   boolean collidesWithBoundary(Boundary b, float x, float y) {
     if (x + gridSize * 0.8 > b.xpos && x < b.xpos + b.w &&
       y + gridSize * 0.8 > b.ypos && y < b.ypos + b.h) {
@@ -213,17 +244,18 @@ class Leprechaun {
     return false;
   }
 
+  // Function to get leprechaun's X coordinate
   float getX() {
     return leprechaunX;
   }
 
+  // Function to get leprechaun's Y coordinate
   float getY() {
     return leprechaunY;
   }
 }
 
-
-
+// Initializing objects and setting up the canvas
 Duck playerDuck;
 ArrayList<Boundary> boundaries;
 ArrayList<Coin> coins;
@@ -233,8 +265,11 @@ Leprechaun testL;
 
 void setup() {
   size(700, 700);
+  
   cols = width / gridSize;
   rows = height / gridSize;
+  
+  // Loading sound and image files
   menuImg = loadImage("Menu.png");
   pondImg = loadImage("Pond.png");
   duckImg = loadImage("Duck.png");
@@ -245,6 +280,7 @@ void setup() {
   
   bg.loop();
 
+  // Creating new duck and boundary objects
   background(pondImg);
   playerDuck = new Duck();
   boundaries = new ArrayList<Boundary>();
@@ -257,18 +293,20 @@ void setup() {
   boundaries.add(new Boundary(width/2-gridSize/2, 0, gridSize, 4*gridSize));
   boundaries.add(new Boundary(width/2-gridSize/2, height - 4*gridSize, gridSize, height));
 
-  test = new Coin(350, 350);
+  // Creating new coin objects
   coins = new ArrayList<Coin>();
   for (int i = 20; i> 0; i--) {
     coins.add(new Coin(random(1, cols-1) * gridSize, random(1, rows-1) * gridSize));
   }
   
+  // Creating new leprechaun objects
   leprechauns = new ArrayList<Leprechaun>();
   for (int i = 0; i < 3; i++) {
     leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize));
   }
 }
 
+// Main drawing loop
 void draw() {
   if(currentState == MENU_STATE){
     drawMenu();
@@ -277,75 +315,78 @@ void draw() {
   }
 }
 
+// Function to draw the menu screen
 void drawMenu(){
   background(menuImg);
   
-  // Draw the start button
+  // Draw the easy mode button
   strokeWeight(3);
   stroke(0);
   fill(#FFE300);
   rect(75, 450, 150, 50, 20);
-  
-
   fill(0);
   textSize(24);
   textAlign(CENTER, CENTER);
   text("EASY", 150, 475);
   
-  // Draw the start button
+  // Draw the hard mode button
   strokeWeight(3);
   stroke(0);
   fill(#FFE300);
   rect(75, 550, 150, 50, 20);
-  
-
   fill(0);
   textSize(24);
   textAlign(CENTER, CENTER);
   text("HARD", 150, 575);
 }
 
+// Function to draw the game screen
 void drawGame(){
   background(pondImg);
   drawGrid();
   playerDuck.drawDuck();
   playerDuck.moveDuck();
 
+  // Draw boundaries
   for (Boundary boundary : boundaries) {
     boundary.drawBoundary();
   }
 
+  // Iterate through coins and check for collision with player duck
   Iterator<Coin> it = coins.iterator();
   while (it.hasNext()) {
     Coin coin = it.next();
-    if (dist(playerDuck.getX() * gridSize, playerDuck.getY()* gridSize , coin.getX()  , coin.getY()  ) < gridSize*0.75){
-      it.remove();
-      coinSound.play();
-      println("Coin collected");
+    if (dist(playerDuck.getX() * gridSize, playerDuck.getY() * gridSize, coin.getX(), coin.getY()) < gridSize * 0.75) {
+      it.remove(); // Remove collected coins
+      coinSound.play(); // Play coin collect sound
+      println("Coin collected"); // Print message to console
     } else {
-      coin.drawCoin();
+      coin.drawCoin(); // Draw coins that are not collected
     }
   }
   
+  // Iterate through leprechauns, draw them, and move them
   for (Leprechaun leprechaun : leprechauns) {
     leprechaun.drawLeprechaun();
     leprechaun.moveLeprechaun();
 
+    // Check if player duck collides with leprechaun
     if (dist(playerDuck.getX() * gridSize, playerDuck.getY() * gridSize, leprechaun.getX(), leprechaun.getY()) < gridSize * 0.8) {
-      println("Player loses!");
+      println("Player loses!"); // Print message to console
     }
   }
 }
 
+// Function to handle mouse clicks
 void mousePressed() {
-  // Check if the mouse click is inside the start button
+  // Check if the mouse click is inside the start buttons
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 450 && mouseY < 450 + 50) {
-    currentState = GAME_STATE; // Switch to game state
+    currentState = GAME_STATE; // Switch to game state (easy mode)
   }
   
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 550 && mouseY < 550 + 50) {
-    currentState = GAME_STATE; // Switch to game state
+    currentState = GAME_STATE; // Switch to game state (hard mode)
   }
 }
