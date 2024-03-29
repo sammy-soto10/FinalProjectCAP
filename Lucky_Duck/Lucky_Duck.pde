@@ -8,15 +8,17 @@ PImage duckImg;
 PImage coinImg;
 PImage leprechaunImg;
 
+SoundFile bg;
 SoundFile coinSound;
 
 int MENU_STATE = 0;
 int GAME_STATE = 1;
 int currentState = MENU_STATE;
 
-int gridSize = 35; // Size of each grid cell
-int cols, rows; // Number of columns and rows in the grid
+int gridSize = 35; 
+int cols, rows;
 void drawGrid() {
+  strokeWeight(1);
   stroke(100, 100, 100, 20);
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
@@ -45,10 +47,10 @@ class Boundary {
     rect(xpos, ypos, w, h);
   }
 }
-
-
+  
+  
 class Duck {
-  float duckX, duckY; // Ducks's position
+  float duckX, duckY;
   float duckDirection; // Duck's direction (0: right, 1: down, 2: left, 3: up)
   float duckSpeed;
 
@@ -61,6 +63,28 @@ class Duck {
 
   void drawDuck() {
     image(duckImg, duckX * gridSize, duckY * gridSize, gridSize, gridSize);
+  }
+  
+  boolean withinWindow(float x, float y) {
+    return (x >= 0 && x < cols-1 && y >= 0 && y < rows-1);
+  }
+  
+  boolean collidesWithAnyBoundary(float x, float y) {
+    for (Boundary boundary : boundaries) {
+      if (collidesWithBoundary(boundary, x, y)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  boolean collidesWithBoundary(Boundary b, float x, float y) {
+    // check for collision with each boundary
+    if (x * gridSize + gridSize > b.xpos && x * gridSize < b.xpos + b.w &&
+      y * gridSize + gridSize > b.ypos && y * gridSize < b.ypos + b.h) {
+      return true;
+    }
+    return false;
   }
 
   void moveDuck() {
@@ -98,29 +122,7 @@ class Duck {
     } else if (duckX > cols-1) {
       duckX =0;
     }
-    //}
-  }
-
-  boolean withinWindow(float x, float y) {
-    return (x >= 0 && x < cols-1 && y >= 0 && y < rows-1);
-  }
-
-  boolean collidesWithAnyBoundary(float x, float y) {
-    for (Boundary boundary : boundaries) {
-      if (collidesWithBoundary(boundary, x, y)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  boolean collidesWithBoundary(Boundary b, float x, float y) {
-    // check for collision with each boundary
-    if (x * gridSize + gridSize > b.xpos && x * gridSize < b.xpos + b.w &&
-      y * gridSize + gridSize > b.ypos && y * gridSize < b.ypos + b.h) {
-      return true;
-    }
-    return false;
+    
   }
 
   float getX() {
@@ -153,11 +155,81 @@ class Coin {
   }
 }
 
+class Leprechaun {
+  float leprechaunX, leprechaunY;
+  float leprechaunSpeed;
+  float leprechaunDirection;
+
+  Leprechaun(float x, float y) {
+    leprechaunX = x;
+    leprechaunY = y;
+    leprechaunSpeed = 3;
+    leprechaunDirection = random(TWO_PI);
+  }
+
+  void drawLeprechaun() {
+    image(leprechaunImg, leprechaunX + gridSize * 0.12, leprechaunY + gridSize * 0.12, gridSize * 0.8, gridSize * 0.8 * 7/4);
+  }
+
+  void moveLeprechaun() {
+    // move leprechaun in a random direction
+    leprechaunX += cos(leprechaunDirection) * leprechaunSpeed;
+    leprechaunY += sin(leprechaunDirection) * leprechaunSpeed;
+
+    if (collidesWithAnyBoundary(leprechaunX, leprechaunY)) {
+      for (int i = 0; i < 100; i++) {
+        leprechaunDirection = random(TWO_PI);
+        if (!collidesWithAnyBoundary(leprechaunX + cos(leprechaunDirection) * leprechaunSpeed * 2, leprechaunY + sin(leprechaunDirection) * leprechaunSpeed * 2)) {
+          break;
+        }
+      }
+    }
+   
+    
+    if (leprechaunX < 0 || leprechaunX > width || leprechaunY < 0 || leprechaunY > height) {
+      for (int i = 0; i < 100; i++) {
+        leprechaunDirection = random(TWO_PI);
+        if (!collidesWithAnyBoundary(leprechaunX + cos(leprechaunDirection) * leprechaunSpeed * 2, leprechaunY + sin(leprechaunDirection) * leprechaunSpeed * 2)) {
+          break;
+        }
+      }
+    }
+  }
+
+  boolean collidesWithAnyBoundary(float x, float y) {
+    for (Boundary boundary : boundaries) {
+      if (collidesWithBoundary(boundary, x, y)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  boolean collidesWithBoundary(Boundary b, float x, float y) {
+    if (x + gridSize * 0.8 > b.xpos && x < b.xpos + b.w &&
+      y + gridSize * 0.8 > b.ypos && y < b.ypos + b.h) {
+      return true;
+    }
+    return false;
+  }
+
+  float getX() {
+    return leprechaunX;
+  }
+
+  float getY() {
+    return leprechaunY;
+  }
+}
+
+
 
 Duck playerDuck;
 ArrayList<Boundary> boundaries;
 ArrayList<Coin> coins;
 Coin test;
+ArrayList<Leprechaun> leprechauns;
+Leprechaun testL;
 
 void setup() {
   size(700, 700);
@@ -169,6 +241,9 @@ void setup() {
   coinImg = loadImage("coin.png");
   leprechaunImg = loadImage("leprechaun.png");
   coinSound = new SoundFile(this, "coinCollect.mp3");
+  bg = new SoundFile(this, "backgroundmusic.mp3");
+  
+  bg.loop();
 
   background(pondImg);
   playerDuck = new Duck();
@@ -185,7 +260,12 @@ void setup() {
   test = new Coin(350, 350);
   coins = new ArrayList<Coin>();
   for (int i = 20; i> 0; i--) {
-    coins.add(new Coin(random(1, cols) * gridSize, random(1, rows) * gridSize));
+    coins.add(new Coin(random(1, cols-1) * gridSize, random(1, rows-1) * gridSize));
+  }
+  
+  leprechauns = new ArrayList<Leprechaun>();
+  for (int i = 0; i < 3; i++) {
+    leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize));
   }
 }
 
@@ -196,20 +276,35 @@ void draw() {
     drawGame();
   }
 }
+
 void drawMenu(){
   background(menuImg);
   
   // Draw the start button
-  stroke(255);
-  fill(#FFD800);
-  rect(75, 475, 150, 50, 20);
+  strokeWeight(3);
+  stroke(0);
+  fill(#FFE300);
+  rect(75, 450, 150, 50, 20);
   
 
-  fill(255);
+  fill(0);
   textSize(24);
   textAlign(CENTER, CENTER);
-  text("START", 150, 500);
+  text("EASY", 150, 475);
+  
+  // Draw the start button
+  strokeWeight(3);
+  stroke(0);
+  fill(#FFE300);
+  rect(75, 550, 150, 50, 20);
+  
+
+  fill(0);
+  textSize(24);
+  textAlign(CENTER, CENTER);
+  text("HARD", 150, 575);
 }
+
 void drawGame(){
   background(pondImg);
   drawGrid();
@@ -230,15 +325,27 @@ void drawGame(){
     } else {
       coin.drawCoin();
     }
-
-
   }
   
+  for (Leprechaun leprechaun : leprechauns) {
+    leprechaun.drawLeprechaun();
+    leprechaun.moveLeprechaun();
+
+    if (dist(playerDuck.getX() * gridSize, playerDuck.getY() * gridSize, leprechaun.getX(), leprechaun.getY()) < gridSize * 0.8) {
+      println("Player loses!");
+    }
+  }
 }
+
 void mousePressed() {
   // Check if the mouse click is inside the start button
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
-      mouseY > 475 && mouseY < 475 + 50) {
+      mouseY > 450 && mouseY < 450 + 50) {
+    currentState = GAME_STATE; // Switch to game state
+  }
+  
+  if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
+      mouseY > 550 && mouseY < 550 + 50) {
     currentState = GAME_STATE; // Switch to game state
   }
 }
