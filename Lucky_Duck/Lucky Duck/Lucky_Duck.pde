@@ -9,6 +9,8 @@ PImage pondImg;
 PImage duckImg;
 PImage coinImg;
 PImage leprechaunImg;
+PImage Won;
+PImage Lose;
 
 SoundFile bg;
 SoundFile coinSound;
@@ -17,6 +19,7 @@ int MENU_STATE = 0;
 int GAME_STATE_EASY= 1;
 int GAME_STATE_HARD= 2;
 int WIN_STATE = 3;
+int LOSE_STATE = 4;
 int currentState = MENU_STATE;
 
 int gridSize = 35; 
@@ -281,6 +284,8 @@ void setup() {
   duckImg = loadImage("Duck.png");
   coinImg = loadImage("coin.png");
   leprechaunImg = loadImage("leprechaun.png");
+  Won = loadImage("Won.png");
+  Lose = loadImage("Lose.png");
   coinSound = new SoundFile(this, "coinCollect.mp3");
   bg = new SoundFile(this, "backgroundmusic.mp3");
   
@@ -322,6 +327,12 @@ void draw() {
   }
   else if(currentState == GAME_STATE_HARD){
     drawGame();
+  }
+  else if(currentState == WIN_STATE){
+    drawWinScreen();
+  }
+  else if(currentState == LOSE_STATE){
+    drawLoseScreen();
   }
 }
 
@@ -389,6 +400,7 @@ void drawGame(){
     // Check if player duck collides with leprechaun
     if (dist(playerDuck.getX() * gridSize, playerDuck.getY() * gridSize, leprechaun.getX(), leprechaun.getY()) < gridSize * 0.8) {
       println("Player loses!"); // Print message to console
+      currentState = LOSE_STATE;
     }
   }
   
@@ -397,6 +409,14 @@ void drawGame(){
   textSize(24);
   textAlign(CENTER, CENTER);
   text("Coins Remaining: " + coins.size(), 150, 680);
+}
+
+void drawWinScreen(){
+  background(Won);
+}
+
+void drawLoseScreen(){
+  background(Lose);
 }
 
 // Function to handle mouse clicks
@@ -429,9 +449,9 @@ void mousePressed() {
         coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
       }
       
-      int leprechaunSize = 5;
+      int leprechaunSize = 4;
       for (int i = 0; i < leprechaunSize; i++) {
-        leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize, 4));
+        leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize, 5));
       }
   }
 }
