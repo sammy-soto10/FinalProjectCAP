@@ -24,4 +24,8 @@ git clone https://github.com/sammy-soto10/LuckyDuck
 4. You can restart the game by pressing play again, and it will take you back to the original game menu!
 
 ## Gallery
+![Won](https://github.com/sammy-soto10/LuckyDuck/assets/64513150/a0dbb0e4-273f-4838-855e-7ce9999bf488)
+
+
+
 
