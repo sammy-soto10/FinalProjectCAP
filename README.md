@@ -26,6 +26,7 @@ git clone https://github.com/sammy-soto10/LuckyDuck
 ## Gallery
 ![Won](https://github.com/sammy-soto10/LuckyDuck/assets/64513150/a0dbb0e4-273f-4838-855e-7ce9999bf488)
 
+![Lost](https://github.com/sammy-soto10/LuckyDuck/assets/64513150/f7e3c66d-808c-47d7-af37-9c6ea2dbad98)
 
 
 
