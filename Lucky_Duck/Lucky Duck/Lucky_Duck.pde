@@ -245,7 +245,7 @@ class Leprechaun {
   // Function to check if leprechaun collides with a specific boundary
   boolean collidesWithBoundary(Boundary b, float x, float y) {
     if (x + gridSize * 0.8 > b.xpos && x < b.xpos + b.w &&
-      y + gridSize * 0.8 > b.ypos && y < b.ypos + b.h) {
+      y + gridSize * 0.8 * 7/4 > b.ypos && y < b.ypos + b.h) {
       return true;
     }
     return false;
@@ -306,15 +306,9 @@ void setup() {
 
   // Creating new coin objects
   coins = new ArrayList<Coin>();
-  //for (int i = 0; i<coinSize; i++) {
-  //  coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
-  //}
   
   // Creating new leprechaun objects
   leprechauns = new ArrayList<Leprechaun>();
-  //for (int i = 0; i < 3; i++) {
-  //  leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize));
-  //}
 }
 
 // Main drawing loop
@@ -413,10 +407,30 @@ void drawGame(){
 
 void drawWinScreen(){
   background(Won);
+  
+  // Draw the hard mode button
+  strokeWeight(3);
+  stroke(0);
+  fill(#FFE300);
+  rect(75, 550, 150, 50, 20);
+  fill(0);
+  textSize(24);
+  textAlign(CENTER, CENTER);
+  text("PLAY AGAIN", 150, 575);
 }
 
 void drawLoseScreen(){
   background(Lose);
+  
+  // Draw the hard mode button
+  strokeWeight(3);
+  stroke(0);
+  fill(#FFE300);
+  rect(75, 550, 150, 50, 20);
+  fill(0);
+  textSize(24);
+  textAlign(CENTER, CENTER);
+  text("PLAY AGAIN", 150, 575);
 }
 
 // Function to handle mouse clicks
@@ -434,7 +448,7 @@ void mousePressed() {
       
       int leprechaunSize = 3;
       for (int i = 0; i < leprechaunSize; i++) {
-        leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize, 3));
+        leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
       }
   
   }
@@ -451,7 +465,52 @@ void mousePressed() {
       
       int leprechaunSize = 4;
       for (int i = 0; i < leprechaunSize; i++) {
-        leprechauns.add(new Leprechaun(random(1, cols - 1) * gridSize, random(1, rows - 1) * gridSize, 5));
+        leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 5));
       }
+  }
+  
+  if (currentState == LOSE_STATE || currentState == WIN_STATE && mouseX > 75 && mouseX < 75 + 150 &&
+      mouseY > 550 && mouseY < 550 + 50){
+      currentState = MENU_STATE;
+      resetGame();
+  }
+}
+
+void resetGame() {
+  // Reset duck position
+  playerDuck = new Duck();
+
+  // Clear coins
+  coins.clear();
+
+  // Reinitialize coins based on game mode
+  if (currentState == GAME_STATE_EASY) {
+    coinSize = 20;
+    for (int i = 0; i < coinSize; i++) {
+      coins.add(new Coin(int(random(1, cols - 2)) * gridSize, int(random(1, rows - 2)) * gridSize));
+    }
+  } 
+  else if (currentState == GAME_STATE_HARD) {
+    coinSize = 30;
+    for (int i = 0; i < coinSize; i++) {
+      coins.add(new Coin(int(random(1, cols - 2)) * gridSize, int(random(1, rows - 2)) * gridSize));
+    }
+  }
+
+  // Clear leprechauns
+  leprechauns.clear();
+
+  // Reinitialize leprechauns based on game mode
+  if (currentState == GAME_STATE_EASY) {
+    int leprechaunSize = 3;
+    for (int i = 0; i < leprechaunSize; i++) {
+      leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
+    }
+  } 
+  else if (currentState == GAME_STATE_HARD) {
+    int leprechaunSize = 4;
+    for (int i = 0; i < leprechaunSize; i++) {
+      leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 5));
+    }
   }
 }
