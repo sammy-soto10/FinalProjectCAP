@@ -392,9 +392,9 @@ void drawGame(){
     leprechaun.moveLeprechaun();
 
     // Check if player duck collides with leprechaun
-    if (dist(playerDuck.getX() * gridSize, playerDuck.getY() * gridSize, leprechaun.getX(), leprechaun.getY()) < gridSize * 0.8) {
-      println("Player loses!"); // Print message to console
-      currentState = LOSE_STATE;
+    if (dist(playerDuck.getX() * gridSize, playerDuck.getY() * gridSize, leprechaun.getX() + gridSize * 0.5, leprechaun.getY() + gridSize * 0.5) < gridSize * 0.8) {
+        println("Player loses!"); // Print message to console
+        currentState = LOSE_STATE;
     }
   }
   
