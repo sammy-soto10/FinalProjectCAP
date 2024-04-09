@@ -8,6 +8,7 @@ PImage menuImg;
 PImage pondImg;
 PImage duckImg;
 PImage coinImg;
+PImage tutorialImg;
 PImage leprechaunImg;
 PImage Won;
 PImage Lose;
@@ -20,6 +21,7 @@ int GAME_STATE_EASY= 1;
 int GAME_STATE_HARD= 2;
 int WIN_STATE = 3;
 int LOSE_STATE = 4;
+int TUTORIAL_STATE = 5;
 int currentState = MENU_STATE;
 
 int gridSize = 35; 
@@ -284,6 +286,7 @@ void setup() {
   duckImg = loadImage("Duck.png");
   coinImg = loadImage("coin.png");
   leprechaunImg = loadImage("leprechaun.png");
+  tutorialImg = loadImage("HowTo.png");
   Won = loadImage("Won.png");
   Lose = loadImage("Lose.png");
   coinSound = new SoundFile(this, "coinCollect.mp3");
@@ -328,6 +331,9 @@ void draw() {
   else if(currentState == LOSE_STATE){
     drawLoseScreen();
   }
+  else if(currentState == TUTORIAL_STATE){
+    drawTutorialScreen();
+  }
 }
 
 // Function to draw the menu screen
@@ -353,8 +359,20 @@ void drawMenu(){
   textSize(24);
   textAlign(CENTER, CENTER);
   text("HARD", 150, 575);
+  
+  strokeWeight(3);
+  stroke(0);
+  fill(200);
+  rect(600, 10, 50, 50, 20);
+  fill(0);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text("?", 625, 35);
 }
-
+// Function to draw the tutorial screen
+void drawTutorialScreen(){
+  background(tutorialImg);
+}
 // Function to draw the game screen
 void drawGame(){
   background(pondImg);
@@ -473,6 +491,26 @@ void mousePressed() {
       mouseY > 550 && mouseY < 550 + 50){
       currentState = MENU_STATE;
       resetGame();
+  }
+  
+  if(currentState == MENU_STATE && mouseX < 650 && mouseX > 600 && mouseY > 10 && mouseY < 60){
+      currentState = TUTORIAL_STATE;
+      drawTutorialScreen();
+  }
+  
+  if(currentState == TUTORIAL_STATE && mouseX > 505 && mouseX < 610 && mouseY > 495 && mouseY < 590){
+      currentState = GAME_STATE_EASY;
+      //make 20 coins
+      coinSize = 20;
+      for (int i = 0; i<coinSize; i++) {
+        coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
+      }
+      
+      int leprechaunSize = 3;
+      for (int i = 0; i < leprechaunSize; i++) {
+        leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
+      }
+      
   }
 }
 
