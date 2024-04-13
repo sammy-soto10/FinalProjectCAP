@@ -26,6 +26,15 @@ int currentState = MENU_STATE;
 
 int gridSize = 35; 
 int cols, rows;
+int coinSize;
+
+// Initializing objects
+Duck playerDuck;
+ArrayList<Boundary> boundaries;
+ArrayList<Coin> coins;
+Coin test;
+ArrayList<Leprechaun> leprechauns;
+Leprechaun testL;
 
 // Function to draw grid lines
 void drawGrid() {
@@ -264,16 +273,7 @@ class Leprechaun {
   }
 }
 
-// Initializing objects and setting up the canvas
-Duck playerDuck;
-ArrayList<Boundary> boundaries;
-ArrayList<Coin> coins;
-Coin test;
-ArrayList<Leprechaun> leprechauns;
-Leprechaun testL;
-
-int coinSize;
-
+// Function to set up the canvas
 void setup() {
   size(700, 700);
   
@@ -304,8 +304,6 @@ void setup() {
   boundaries.add(new Boundary(0, height/2+50, gridSize, height));
   boundaries.add(new Boundary(width-gridSize, 0, gridSize, height/2-15));
   boundaries.add(new Boundary(width-gridSize, height/2+50, gridSize, height));
-  //boundaries.add(new Boundary(width/2-gridSize/2, 0, gridSize, 4*gridSize));
-  //boundaries.add(new Boundary(width/2-gridSize/2, height - 4*gridSize, gridSize, height));
 
   // Creating new coin objects
   coins = new ArrayList<Coin>();
@@ -316,6 +314,7 @@ void setup() {
 
 // Main drawing loop
 void draw() {
+  // Draw different screens based on current game state
   if(currentState == MENU_STATE){
     drawMenu();
   }
@@ -369,10 +368,14 @@ void drawMenu(){
   textAlign(CENTER, CENTER);
   text("?", 625, 35);
 }
+
+
 // Function to draw the tutorial screen
 void drawTutorialScreen(){
   background(tutorialImg);
 }
+
+
 // Function to draw the game screen
 void drawGame(){
   background(pondImg);
@@ -423,6 +426,7 @@ void drawGame(){
   text("Coins Remaining: " + coins.size(), 150, 680);
 }
 
+// Function to draw the win screen
 void drawWinScreen(){
   background(Won);
   
@@ -437,6 +441,7 @@ void drawWinScreen(){
   text("PLAY AGAIN", 150, 575);
 }
 
+// Function to draw the lose screen
 void drawLoseScreen(){
   background(Lose);
   
@@ -451,69 +456,79 @@ void drawLoseScreen(){
   text("PLAY AGAIN", 150, 575);
 }
 
+
 // Function to handle mouse clicks
 void mousePressed() {
   // Check if the mouse click is inside the start buttons
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 450 && mouseY < 450 + 50) {
-      currentState = GAME_STATE_EASY; // Switch to game state (easy mode)
+    // Switch to game state (easy mode)
+    currentState = GAME_STATE_EASY;
     
-    //make 20 coins
-      coinSize = 20;
-      for (int i = 0; i<coinSize; i++) {
-        coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
-      }
-      
-      int leprechaunSize = 3;
-      for (int i = 0; i < leprechaunSize; i++) {
-        leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
-      }
-  
+    // Generate 20 coins at random positions
+    coinSize = 20;
+    for (int i = 0; i < coinSize; i++) {
+      coins.add(new Coin(int(random(1, cols - 2)) * gridSize, int(random(1, rows - 2)) * gridSize));
+    }
+    
+    // Generate 3 leprechauns at random positions
+    int leprechaunSize = 3;
+    for (int i = 0; i < leprechaunSize; i++) {
+      leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
+    }
   }
   
   if (currentState == MENU_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 550 && mouseY < 550 + 50) {
-      currentState = GAME_STATE_HARD; // Switch to game state (hard mode)
+    // Switch to game state (hard mode)
+    currentState = GAME_STATE_HARD;
     
-    //make 30 coins
-      coinSize = 30;
-      for (int i = 0; i<coinSize; i++) {
-        coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
-      }
-      
-      int leprechaunSize = 4;
-      for (int i = 0; i < leprechaunSize; i++) {
-        leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 5));
-      }
+    // Generate 30 coins at random positions
+    coinSize = 30;
+    for (int i = 0; i < coinSize; i++) {
+      coins.add(new Coin(int(random(1, cols - 2)) * gridSize, int(random(1, rows - 2)) * gridSize));
+    }
+    
+    // Generate 4 leprechauns at random positions
+    int leprechaunSize = 4;
+    for (int i = 0; i < leprechaunSize; i++) {
+      leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 5));
+    }
   }
   
   if (currentState == LOSE_STATE || currentState == WIN_STATE && mouseX > 75 && mouseX < 75 + 150 &&
       mouseY > 550 && mouseY < 550 + 50){
-      currentState = MENU_STATE;
-      resetGame();
+    // Return to menu state and reset the game
+    currentState = MENU_STATE;
+    resetGame();
   }
   
-  if(currentState == MENU_STATE && mouseX < 650 && mouseX > 600 && mouseY > 10 && mouseY < 60){
-      currentState = TUTORIAL_STATE;
-      drawTutorialScreen();
+  if (currentState == MENU_STATE && mouseX < 650 && mouseX > 600 && mouseY > 10 && mouseY < 60){
+    // Switch to tutorial state and draw the tutorial screen
+    currentState = TUTORIAL_STATE;
+    drawTutorialScreen();
   }
   
-  if(currentState == TUTORIAL_STATE && mouseX > 505 && mouseX < 610 && mouseY > 495 && mouseY < 590){
-      currentState = GAME_STATE_EASY;
-      //make 20 coins
-      coinSize = 20;
-      for (int i = 0; i<coinSize; i++) {
-        coins.add(new Coin( int(random(1,cols-2)) * gridSize , int(random(1,rows-2)) * gridSize ));
-      }
-      
-      int leprechaunSize = 3;
-      for (int i = 0; i < leprechaunSize; i++) {
-        leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
-      }
-      
+  if (currentState == TUTORIAL_STATE && mouseX > 505 && mouseX < 610 && mouseY > 495 && mouseY < 590){
+    // Switch to easy mode and generate game elements
+    currentState = GAME_STATE_EASY;
+    
+    // Generate 20 coins at random positions
+    coinSize = 20;
+    for (int i = 0; i < coinSize; i++) {
+      coins.add(new Coin(int(random(1, cols - 2)) * gridSize, int(random(1, rows - 2)) * gridSize));
+    }
+    
+    // Generate 3 leprechauns at random positions
+    int leprechaunSize = 3;
+    for (int i = 0; i < leprechaunSize; i++) {
+      leprechauns.add(new Leprechaun(random(1, cols - 2) * gridSize, random(1, rows - 2) * gridSize, 3));
+    }
   }
 }
 
+
+// Function to reset the game state
 void resetGame() {
   // Reset duck position
   playerDuck = new Duck();
